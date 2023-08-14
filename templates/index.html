@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amazon Price Comparison</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/styles.css?v=1">
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <a class="navbar-brand" href="#">Amazon Price Comparison</a>
+            <div class="navbar-nav ml-auto">
+                <button class="btn btn-dark btn-circle btn-history rounded-0">
+                  <i class="fas fa-history"></i>
+                  <span>Search History</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+    <div id="loader" class="loader"></div>
+    <main>
+        <div class="container">
+            <div class="search-container">
+                <div class="search-form">
+                    <input type="text" class="form-control search-input" placeholder="Search products" id="query">
+                    <button type="button" class="btn btn-dark search-btn" id="search-btn">Search</button>
+                </div>
+            </div>
+        </div>
+        <div id="search-history-container" style="display: none;"></div>
+    </main>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        function b64EncodeUnicode(str) {
+          return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function (match, p1) {
+            return String.fromCharCode('0x' + p1);
+          }));
+        }
+
+        function b64DecodeUnicode(str) {
+          return decodeURIComponent(atob(str).split('').map(function (c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+          }).join(''));
+        }
+
+        const searchInput = document.getElementById('query');
+        searchInput.addEventListener('keydown', async (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                searchQuery();
+            }
+        });
+
+
+        document.getElementById('search-btn').addEventListener('click', searchQuery)
+
+        async function searchQuery() {
+          try {
+            const query = document.getElementById('query').value;
+
+            if (!query) {
+                alert('Please enter a search query.');
+                return;
+            }
+
+            showLoader(); // Show the loader
+
+            const response = await fetch(`/search?query=${query}`);
+            if (!response.ok) {
+                if (response.status === 429) {
+                    alert('You have reached your daily limit of 10 searches. For unlimited searches, consider our premium plan.');
+                }
+                else if (response.status === 500) {
+                    alert('Scraping failed. Please try again later.');
+                }
+                throw new Error(`HTTP error! Status: ${response.status}`);
+             }
+                const data = await response.json();
+                const results = data.results;
+                const resultsString = b64EncodeUnicode(JSON.stringify(results));
+
+            window.location.href = `/static/results.html?results=${resultsString}`;
+          } catch (error) {
+                console.error('Error fetching search results:', error);
+          } finally {
+                hideLoader(); // Hide the loader
+          }
+        }
+
+
+        function showLoader() {
+          const loader = document.getElementById('loader');
+          loader.style.display = 'block';
+        }
+
+        function hideLoader() {
+          const loader = document.getElementById('loader');
+          loader.style.display = 'none';
+        }
+
+
+        const historyButton = document.querySelector('.btn-circle');
+        historyButton.addEventListener('click', () => {
+            window.location.href = '/search_history_page';
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Price Comparison</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/styles.css?v=1">
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <a class="navbar-brand" href="http://localhost:8000">Amazon Price Comparison</a>
+        </nav>
+    </header>
+    <main>
+        <div class="container">
+            <h1 class="text-center mt-5">Price Comparison</h1>
+            <table class="table table-bordered mt-3">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Rating</th>
+                        <th>Amazon.com</th>
+                        <th>Amazon.co.uk</th>
+                        <th>Amazon.de</th>
+                        <th>Amazon.ca</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td id="item-name"></td>
+                        <td id="item-rating"></td>
+                        <td id="price-amazon-com"></td>
+                        <td id="price-amazon-co-uk"></td>
+                        <td id="price-amazon-de"></td>
+                        <td id="price-amazon-ca"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        function createPriceLink(url, price) {
+            const a = document.createElement("a");
+            a.href = url;
+            a.target = "_blank";
+            a.textContent = price;
+            return a;
+        }
+
+         function updateComparisonTable() {
+            const asin = new URLSearchParams(window.location.search).get("asin");
+            const data = JSON.parse(sessionStorage.getItem('comparisonData'));
+
+            if (!data) {
+                alert("No data found. Please try again.");
+                return;
+            }
+
+            document.getElementById("item-name").innerText = data.item_name;
+            document.getElementById("item-rating").innerText = data.item_rating;
+
+            const priceCells = {
+                "amazon.com": "price-amazon-com",
+                "amazon.co.uk": "price-amazon-co-uk",
+                "amazon.de": "price-amazon-de",
+                "amazon.ca": "price-amazon-ca",
+            };
+
+            for (const [domain, price] of Object.entries(data.prices)) {
+                const cell = document.getElementById(priceCells[domain]);
+                const url = data.urls[domain];
+                cell.appendChild(createPriceLink(url, price));
+            }
+         }
+
+
+        updateComparisonTable();
+    </script>
+</body>
+</html>

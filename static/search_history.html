@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search History</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/styles.css?v=1">
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <a class="navbar-brand" href="http://localhost:8000">Amazon Price Comparison</a>
+        </nav>
+    </header>
+    <main>
+        <div class="container">
+            <h1>Search History</h1>
+            <table id="search-history-table" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Query</th>
+                        <th>Item Name</th>
+                        <th>Amazon US</th>
+                        <th>Amazon UK</th>
+                        <th>Amazon DE</th>
+                        <th>Amazon CA</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </main>
+    <script>
+        async function fetchSearchHistory() {
+            const response = await fetch('/search_history');
+            const data = await response.json();
+            const searchHistory = data.search_history;
+            const tableBody = document.querySelector('#search-history-table tbody');
+
+            searchHistory.forEach(record => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${record.time}</td>
+                    <td>${record.query}</td>
+                    <td>${record.item_name}</td>
+                    <td>${record.amazon_us_price}</td>
+                    <td>${record.amazon_uk_price}</td>
+                    <td>${record.amazon_de_price}</td>
+                    <td>${record.amazon_ca_price}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        fetchSearchHistory();
+    </script>
+</body>
+</html>

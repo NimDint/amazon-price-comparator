@@ -1,0 +1,121 @@
+/* Navbar styles */
+.navbar {
+  background-color: #232f3e;
+}
+
+.navbar-brand {
+  font-size: 1.5rem;
+  margin-right: 2rem;
+}
+
+.navbar-brand:hover {
+  color: #ff9900 !important;
+  text-decoration: none !important;
+}
+
+.navbar-brand:focus, .navbar-brand:active {
+  color: #ff9900 !important;
+  text-decoration: none !important;
+  outline: none !important;
+}
+
+.btn-circle {
+  width: 150px;
+  height: 40px;
+  padding: 0;
+  background-color: #ff9900;
+  color: #fff;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-circle:hover {
+  background-color: #ffaa33;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.6);
+}
+
+.btn-history {
+  background-color: #ff9900;
+  border-color: #ff9900;
+  transition: all 0.2s ease-in-out;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.btn-history:hover {
+  background-color: #ffaa33;
+  border-color: #ffaa33;
+}
+
+/* Search bar styles */
+.search-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+}
+
+.search-form {
+  display: flex;
+}
+
+.search-input {
+  margin-right: 5px;
+}
+
+.search-btn {
+  border-radius: 0;
+  background-color: #FF9900;
+  border-color: #FF9900;
+}
+
+.search-btn:hover {
+  background-color: #FFA31A;
+  border-color: #FFA31A;
+}
+
+/* Common styles */
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.container {
+  margin-top: 2rem;
+}
+
+.loader {
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #3498db;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: none;
+}
+
+table.table tr.clickable-row {
+    cursor: pointer !important;
+}
+
+table.table tbody tr:nth-child(odd) {
+    background-color: #f9f9f9 !important;
+}
+
+table.table tbody tr:nth-child(even) {
+    background-color: #ffffff !important;
+}
+
+table.table tr.clickable-row:hover {
+    background-color: #e8e8e8 !important;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+

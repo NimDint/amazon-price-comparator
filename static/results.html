@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amazon Price Comparison - Results</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/styles.css?v=1">
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <a class="navbar-brand" href="http://localhost:8000">Amazon Price Comparison</a>
+        </nav>
+    </header>
+    <div id="loader" class="loader"></div>
+    <main>
+        <div class="container">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Image</th>
+                    </tr>
+                </thead>
+                <tbody id="results">
+                </tbody>
+            </table>
+        </div>
+    </main>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        function populateTable(results) {
+            const tbody = document.querySelector('#results');
+            tbody.innerHTML = '';
+            results.forEach(result => {
+                const tr = document.createElement('tr');
+                const nameTd = document.createElement('td');
+                const imageTd = document.createElement('td');
+                const img = document.createElement('img');
+
+                tr.onclick = () => fetchPriceComparison(result.asin);
+
+                tr.classList.add('clickable-row');
+
+                nameTd.textContent = result.name;
+                img.src = result.image;
+                img.width = 64;
+                img.height = 64;
+
+                imageTd.appendChild(img);
+                tr.appendChild(nameTd);
+                tr.appendChild(imageTd);
+                tbody.appendChild(tr);
+            });
+        }
+
+        function getResultsFromUrl() {
+            const searchParams = new URLSearchParams(window.location.search);
+            const resultsString = searchParams.get('results');
+            if (resultsString) {
+                const results = JSON.parse(atob(resultsString));
+                populateTable(results);
+            }
+        }
+
+        getResultsFromUrl();
+
+        async function fetchPriceComparison(asin) {
+          showLoader();
+
+          try {
+            const response = await fetch(`/compare?asin=${asin}`);
+            const data = await response.json();
+
+            if (data.error) {
+              alert(data.error);
+              hideLoader();
+              return;
+            }
+
+            sessionStorage.setItem('comparisonData', JSON.stringify(data));
+            window.location.href = `/static/comparison.html?asin=${asin}`;
+          } catch (error) {
+            hideLoader();
+            console.error('Error fetching comparison:', error);
+          }
+        }
+
+        function showLoader() {
+          const loader = document.getElementById('loader');
+          loader.style.display = 'block';
+        }
+
+        function hideLoader() {
+          const loader = document.getElementById('loader');
+          loader.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
