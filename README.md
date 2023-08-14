@@ -15,7 +15,7 @@ Activate the virtual environment:
 
 On Windows:
 
-    project_env\\Scripts\\activate
+    project_env\Scripts\activate
 
 On macOS and Linux:
 
